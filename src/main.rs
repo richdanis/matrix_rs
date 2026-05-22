@@ -1,3 +1,5 @@
+use rand::distr::Uniform;
+
 fn main() {
     // m1 ∈ m x n
     // m2 ∈ n x l
@@ -14,6 +16,13 @@ fn matrix_loop_v1(m1: &[f32], m2: &[f32], m: usize, n: usize, l: usize) -> Vec<f
         }
     }
     res
+}
+
+// Need to think about method for generating large samples
+fn random_vector(low: f32, high: f32, size: usize) -> Vec<f32> {
+    let dist = Uniform::new(low, high).unwrap();
+    let rng = rand::rng();
+    dist.sample_iter(rng).take(size).collect()
 }
 
 #[cfg(test)]
