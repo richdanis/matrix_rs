@@ -39,6 +39,6 @@ if __name__ == "__main__":
             test_case_folder = f"{dir_name}/test_case_{i}"
             os.makedirs(test_case_folder, exist_ok=True)
 
-            np.savetxt(f"{test_case_folder}/{m1_fname}.txt", m1)
-            np.savetxt(f"{test_case_folder}/{m2_fname}.txt", m2)
-            np.savetxt(f"{test_case_folder}/{res_fname}.txt", res)
+            np.savetxt(f"{test_case_folder}/{m1_fname}.txt", m1, '%.18f', newline=' ')
+            np.savetxt(f"{test_case_folder}/{m2_fname}.txt", m2, '%.18f', newline=' ')
+            np.savetxt(f"{test_case_folder}/{res_fname}.txt", res, '%.18f', newline=' ')

@@ -1,9 +1,16 @@
-use rand::distr::Uniform;
+use regex::Regex;
+use std::fs;
 
 fn main() {
     // m1 ∈ m x n
     // m2 ∈ n x l
     println!("Hello, world!");
+
+    let file_path = String::from(".output/matrix_mult_MinDim.CAT_1/test_case_0/m1_1_7.txt");
+    let m1 = read_matrix_from_txt(file_path).unwrap();
+    println!("{:?}", m1.m);
+    println!("{:?}", m1.n);
+    println!("{:?}", m1.values);
 }
 
 fn matrix_loop_v1(m1: &[f32], m2: &[f32], m: usize, n: usize, l: usize) -> Vec<f32> {
@@ -18,11 +25,31 @@ fn matrix_loop_v1(m1: &[f32], m2: &[f32], m: usize, n: usize, l: usize) -> Vec<f
     res
 }
 
-// Need to think about method for generating large samples
-fn random_vector(low: f32, high: f32, size: usize) -> Vec<f32> {
-    let dist = Uniform::new(low, high).unwrap();
-    let rng = rand::rng();
-    dist.sample_iter(rng).take(size).collect()
+struct Matrix {
+    m: usize,
+    n: usize,
+    values: Vec<f32>,
+}
+
+fn read_matrix_from_txt(file_path: String) -> Option<Matrix> {
+    let re = Regex::new(r"_(?<m>[0-9]+)_(?<l>[0-9]+).txt").unwrap();
+    let Some(caps) = re.captures(&file_path) else {
+        println!("Could not read file!");
+        return None;
+    };
+    let m: usize = caps["m"].parse().unwrap();
+    let n: usize = caps["m"].parse().unwrap();
+    println!("{}", &caps["m"]);
+    // let values = Vec::new();
+    let contents =
+        fs::read_to_string(&file_path).expect(&format!("Could not read file: {}", file_path));
+    let mut values = Vec::with_capacity(m * n);
+    for str_number in contents.split_whitespace() {
+        let number: f32 = str_number.trim().parse().unwrap();
+        values.push(number);
+    }
+
+    Some(Matrix { m, n, values })
 }
 
 #[cfg(test)]
