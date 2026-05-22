@@ -26,8 +26,8 @@ if __name__ == "__main__":
         dir_name = f"{OUTPUT_DIR}/matrix_mult_{min_dim}"
         for i in range(NUM_MATRICES_PER_CAT):
             m, n, l = rng.integers(low=min_dim.value, high=max_dim.value, size=3)
-            m1 = rng.random((m, n))
-            m2 = rng.random((n, l))
+            m1 = rng.random((m, n)).astype(np.float32)
+            m2 = rng.random((n, l)).astype(np.float32)
             res = m1 @ m2
 
             assert res.shape[0] == m and res.shape[1] == l
