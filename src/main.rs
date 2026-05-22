@@ -4,16 +4,9 @@ use std::fs;
 fn main() {
     // m1 ∈ m x n
     // m2 ∈ n x l
-    let path_m1 = String::from(".output/matrix_mult_MinDim.CAT_1/test_case_0/m1_1_7.txt");
-    let m1 = read_matrix_from_txt(path_m1).unwrap();
-    let path_m2 = String::from(".output/matrix_mult_MinDim.CAT_1/test_case_0/m2_7_4.txt");
-    let m2 = read_matrix_from_txt(path_m2).unwrap();
-
-    let path_expected = String::from(".output/matrix_mult_MinDim.CAT_1/test_case_0/res_1_4.txt");
-    let expected = read_matrix_from_txt(path_expected).unwrap();
-
-    let result = matrix_loop_v1(&m1, &m2);
-    assert_eq!(result, expected);
+    let test_case_0 = read_test_case(".output/matrix_mult_MinDim.CAT_1/test_case_0/");
+    let result = matrix_loop_v1(&test_case_0.m1, &test_case_0.m2);
+    assert_eq!(result, test_case_0.res);
 }
 
 fn matrix_loop_v1(m1: &Matrix, m2: &Matrix) -> Matrix {
@@ -58,7 +51,41 @@ impl PartialEq for Matrix {
     }
 }
 
-fn read_matrix_from_txt(file_path: String) -> Option<Matrix> {
+struct TestCase {
+    m1: Matrix,
+    m2: Matrix,
+    res: Matrix,
+}
+
+fn read_test_case(folder_path: &str) -> TestCase {
+    let paths = fs::read_dir(folder_path).unwrap();
+    let paths_real = paths.map(|x| x.unwrap().path());
+    let fnames: Vec<String> = paths_real
+        .map(|x| String::from(x.to_str().unwrap()))
+        .collect();
+
+    let re_1 = Regex::new(r"m1_[0-9]+_[0-9]+.txt").unwrap();
+    let re_2 = Regex::new(r"m2_[0-9]+_[0-9]+.txt").unwrap();
+    let re_res = Regex::new(r"res_[0-9]+_[0-9]+.txt").unwrap();
+
+    TestCase {
+        m1: read_matrix_from_fnames(&fnames, re_1).unwrap(),
+        m2: read_matrix_from_fnames(&fnames, re_2).unwrap(),
+        res: read_matrix_from_fnames(&fnames, re_res).unwrap(),
+    }
+}
+
+fn read_matrix_from_fnames(fnames: &[String], re: Regex) -> Option<Matrix> {
+    for fname in fnames {
+        if re.is_match(fname) {
+            let matrix = read_matrix_from_txt(fname).unwrap();
+            return Some(matrix);
+        }
+    }
+    None
+}
+
+fn read_matrix_from_txt(file_path: &str) -> Option<Matrix> {
     // First get matrix dimensions
     let re = Regex::new(r"_(?<m>[0-9]+)_(?<n>[0-9]+).txt").unwrap();
     let Some(caps) = re.captures(&file_path) else {
