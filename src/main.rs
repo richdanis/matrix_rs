@@ -1,5 +1,6 @@
 use regex::Regex;
 use std::fs;
+use std::time::Instant;
 
 fn main() {
     // m1 ∈ m x n
@@ -65,7 +66,9 @@ fn run_category(category_path: &str) {
     for folder in testcase_folders {
         let test_case = read_test_case(&folder);
         println!("Running test case: {}", folder);
+        let now = Instant::now();
         let result = matrix_loop_v1(&test_case.m1, &test_case.m2);
+        println!("Test case took {} ms.", now.elapsed().as_millis());
         assert_eq!(result, test_case.res, "{} failed.", folder);
     }
 }
