@@ -9,13 +9,13 @@ NUM_MATRICES_PER_CAT = 3
 class MinDim(Enum):
     CAT_1 = 1e0
     CAT_2 = 1e1
-    # CAT_3 = 1e4
+    CAT_3 = 1e2
 
 
 class MaxDim(Enum):
     CAT_1 = 1e1
     CAT_2 = 1e2
-    # CAT_3 = 1e6
+    CAT_3 = 1e3
 
 
 if __name__ == "__main__":

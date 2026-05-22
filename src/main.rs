@@ -4,9 +4,14 @@ use std::fs;
 fn main() {
     // m1 ∈ m x n
     // m2 ∈ n x l
-    let test_case_0 = read_test_case(".output/matrix_mult_MinDim.CAT_1/test_case_0/");
-    let result = matrix_loop_v1(&test_case_0.m1, &test_case_0.m2);
-    assert_eq!(result, test_case_0.res);
+    let category_paths = vec![
+        ".output/matrix_mult_MinDim.CAT_1/",
+        ".output/matrix_mult_MinDim.CAT_2/",
+        ".output/matrix_mult_MinDim.CAT_3/",
+    ];
+    for category_path in category_paths {
+        run_category(category_path);
+    }
 }
 
 fn matrix_loop_v1(m1: &Matrix, m2: &Matrix) -> Matrix {
@@ -48,6 +53,20 @@ impl PartialEq for Matrix {
             .fold(true, |prev, (x, y)| prev && (x - y).abs() < EPS);
 
         cond1 && cond2
+    }
+}
+
+fn run_category(category_path: &str) {
+    let paths = fs::read_dir(category_path).unwrap();
+    let paths_real = paths.map(|x| x.unwrap().path());
+    let testcase_folders: Vec<String> = paths_real
+        .map(|x| String::from(x.to_str().unwrap()))
+        .collect();
+    for folder in testcase_folders {
+        let test_case = read_test_case(&folder);
+        println!("Running test case: {}", folder);
+        let result = matrix_loop_v1(&test_case.m1, &test_case.m2);
+        assert_eq!(result, test_case.res, "{} failed.", folder);
     }
 }
 
